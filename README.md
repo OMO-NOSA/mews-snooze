@@ -154,7 +154,7 @@ cd core-infra
 Also built with the child module, is a deployable module called the root module. The root module installs and uses resources defined in the child module for deployment. The root module is broken into 3 seperate environments `dev`, `staging`, `prod` assuming these environments are in different `AWS Accounts` and instructions on deployments can be found here:
 
 ```
-cd deploy-infra
+cd deploy-infra/{dev | staging | prod}
 ```
 - A README with instructions on how to deploy the infrastructure is placed at in the folder.
 
@@ -173,4 +173,5 @@ Deployment pipleines for Infrastructure have been provided using the `.github/wo
  - Docker Login credentials
 
 #### 📌 Notes
+
 Please see the workflow files for needed credentials.

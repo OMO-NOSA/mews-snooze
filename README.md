@@ -2,7 +2,25 @@
 
 Application deployed on AWS ECS Infrastructure
 
+## Directory Structure
+
+MEWS-SNOOZE/
+├── .github/
+│   └── workflows/
+├── application/
+│   ├── public/
+│   └── src/
+├── core-infra/
+│   └── container-definitions/
+├── deploy-infra/
+│   ├── dev/
+│   ├── prod/
+│   └── staging/
+├── img/
+
+
 ## STACK
+
 * language: Javascript & Hcl
 * Infrastructure: Docker
 * Cloud Deployment: AWS and Terraform
@@ -17,6 +35,7 @@ Docker is used to maintain infrastructure deployment and ensure deploying to an 
 
 
 ### Deploying with Docker
+
 * This solution is deployed using Docker. 
 
 - Build docker image; Run the below command within the folder that contains the DockerFile
@@ -27,7 +46,7 @@ cd Application
 ```
 
 ```
-docker build --tag container-app .
+docker build --tag app .
 ```
 
 - Running the docker container
@@ -35,10 +54,65 @@ docker build --tag container-app .
 ```
 docker run -d --name app -p 80:80 container-app
 ```
+#### Deploy to ECR Using Github Actions Pipeline
 
+Here's a simple `README.md` for the GitHub Actions workflow you provided:
+
+---
+
+##### 🚀 Deploy to Amazon ECR (GitHub Actions Workflow)
+
+The GitHub Actions `ecr-deploy` workflow automates the process of building the Docker image and pushing it to Amazon Elastic Container Registry (ECR) whenever changes are pushed to the `main` branch or a pull request is opened against it.
+
+##### 📂 Workflow File Location
+
+The workflow is defined in a `ecr-deploy.yml` file under `.github/workflows/`, and operates within the `application/` directory of the repository.
+
+##### 🛠️ How It Works
+
+The workflow:
+
+1. **Triggers on:**
+
+   * Pushes to the `main` branch
+   * Pull requests targeting the `main` branch
+
+2. **Performs the following steps:**
+
+   * Checks out the repository
+   * Configures AWS credentials using secrets
+   * Retrieves the latest Git tag for the image version
+   * Logs into Amazon ECR
+   * Builds, tags, and pushes the Docker image to ECR using the Git tag
+
+## 🔐 Required Secrets
+
+Set the following secrets in your GitHub repository:
+
+* `AWS_ACCESS_KEY` – AWS access key with permissions to push to ECR
+* `AWS_SECRET_KEY` – Corresponding AWS secret key
+* `REPO_NAME` – Name of your ECR repository
+
+## 🧱 Example Output
+
+After a successful run, your Docker image will be available in ECR under:
+
+```
+<aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/<REPO_NAME>:<git-tag>
+```
+
+## 📌 Notes
+
+* Make sure your Git repo is tagged properly (`git tag <version>`), as the tag is used for the image version.
+* The AWS region is hardcoded to `us-east-1`. Modify the `aws-region` value if you're using another region.
+* Your Dockerfile must be located in `application/`.
+
+---
 ![Docker infra](img/workflow.png)
 
+
 ### Deploy to AWS Using Terraform
+
 To deploy this solution to the cloud, two main technologies are required -- Cloud platform(AWS), Terraform
 
 - Terraform -- Terraform would be used to instantiate and manage the infrastructure the application would run on, this means, we get the ability to manage the state and the lifecycle of the infrastructure using terraform workflow
@@ -57,6 +131,7 @@ To deploy this solution to the cloud, two main technologies are required -- Clou
 ```
 
 ### Terraform Structure
+
 The IaC code is modularized, meaning, it is built into reusable modules called child module, the child module is located at:
 
 ```

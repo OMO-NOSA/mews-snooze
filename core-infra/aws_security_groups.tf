@@ -1,7 +1,7 @@
 resource "aws_security_group" "alb" {
-  name          = "${var.service_name}_lb_sg_${random_string.uid.result}"
-  description   = "Allow traffic meant for ALB"
-  vpc_id        = var.vpc_id
+  name        = "${var.service_name}_lb_sg_${random_string.uid.result}"
+  description = "Allow traffic meant for ALB"
+  vpc_id      = var.vpc_id
 
   tags = {
     Name                = "app"
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "service_port" {
   security_group_id = aws_security_group.alb.id
 }
 
- 
+
 resource "aws_security_group_rule" "http" {
   type              = "egress"
   description       = "Rule for ALB"
@@ -44,12 +44,12 @@ resource "aws_security_group_rule" "http" {
   cidr_blocks       = var.http_cidr_block
   security_group_id = aws_security_group.alb.id
 }
- 
-  
+
+
 resource "aws_security_group" "ecs_scg" {
-  name          = "${var.service_name}_ecs_sg_${random_string.uid.result}"
-  description   = "Allow traffic meant from ALB to ECS"
-  vpc_id        = var.vpc_id
+  name        = "${var.service_name}_ecs_sg_${random_string.uid.result}"
+  description = "Allow traffic meant from ALB to ECS"
+  vpc_id      = var.vpc_id
 
   tags = {
 
@@ -73,16 +73,16 @@ resource "aws_security_group_rule" "https_traffic" {
 }
 
 resource "aws_security_group_rule" "service_port_traffic" {
-  type                      = "ingress"
-  description               = "Rule for ECS"
-  from_port                 = var.service_port
-  to_port                   = var.service_port
-  protocol                  = "tcp"
-  source_security_group_id  = aws_security_group.alb.id
-  security_group_id         = aws_security_group.ecs_scg.id
+  type                     = "ingress"
+  description              = "Rule for ECS"
+  from_port                = var.service_port
+  to_port                  = var.service_port
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.alb.id
+  security_group_id        = aws_security_group.ecs_scg.id
 }
 
- 
+
 resource "aws_security_group_rule" "http_traffic" {
   type              = "egress"
   description       = "Rule for ECS"

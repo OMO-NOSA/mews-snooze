@@ -5,22 +5,22 @@ variable "aws_region" {
 }
 
 variable "http_cidr_block" {
-  type = list(string)
+  type        = list(string)
   description = "Cidr block for the http traffics"
-  default = ["0.0.0.0/0"]
+  default     = ["0.0.0.0/0"]
 }
 
 variable "service_cidr_block" {
-  type = list(string)
+  type        = list(string)
   description = "Cidr block for the http traffics"
-  default = ["0.0.0.0/0"]
+  default     = ["0.0.0.0/0"]
 }
 
 variable "application_count" {
   type        = number
   description = "Number of application instance"
   default     = 2
-  }
+}
 
 variable "vpc_id" {
   type        = string
@@ -33,31 +33,31 @@ variable "subnet_ids" {
 }
 
 variable "project_name" {
-    type        = string
-    description = "Project name to be rendered in tags"
-    default     = "app"
+  type        = string
+  description = "Project name to be rendered in tags"
+  default     = "app"
 }
 variable "environment" {
-    type        = string
-    description = "Environment to be rendered in tags"
-    default     = "dev"
+  type        = string
+  description = "Environment to be rendered in tags"
+  default     = "dev"
 }
 
 variable "health_check_path" {
-    type        = string
-    description = "The default health check path"
-    default     = "/"
+  type        = string
+  description = "The default health check path"
+  default     = "/"
 }
 
 variable "health_check_protocol" {
-    type        = string
-    description = "Protocol for the health check"
-    default     = "HTTP"
+  type        = string
+  description = "Protocol for the health check"
+  default     = "HTTP"
 }
 variable "lb_name" {
-    type        = string
-    description = "Name of Application load balancer"
-    default     = "app"
+  type        = string
+  description = "Name of Application load balancer"
+  default     = "app"
 }
 variable "ecs_desired_capacity" {
   type        = number
@@ -80,13 +80,13 @@ variable "ecs_min_size" {
 variable "asg_adjustment_type" {
   type        = string
   description = "Auto Scaling group adjustment type -- Valid values are ChangeInCapacity, ExactCapacity, and PercentChangeInCapacity."
-  default     = "ChangeInCapacity"  
+  default     = "ChangeInCapacity"
 }
 
 variable "cluster_name" {
-    type        = string
-    description = "Name of cluster"
-    default     = "app-cluster"
+  type        = string
+  description = "Name of cluster"
+  default     = "app-cluster"
 }
 
 variable "app_agent_task_name" {

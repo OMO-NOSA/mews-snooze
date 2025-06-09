@@ -23,11 +23,11 @@ resource "aws_lb" "app_cluster" {
 
 
 resource "aws_lb_target_group" "app" {
-  name                 = "${var.lb_name}-${random_string.uid.result}"
-  port                 = var.service_port
-  protocol             = "HTTP"
-  vpc_id               = var.vpc_id
-  target_type          = "ip"
+  name        = "${var.lb_name}-${random_string.uid.result}"
+  port        = var.service_port
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "ip"
 
   tags = {
 

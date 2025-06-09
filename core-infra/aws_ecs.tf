@@ -15,8 +15,8 @@ resource "aws_ecs_cluster" "app" {
     value = "enabled"
   }
   configuration {
-      execute_command_configuration {
-      logging    = "OVERRIDE"
+    execute_command_configuration {
+      logging = "OVERRIDE"
       log_configuration {
         cloud_watch_encryption_enabled = true
         cloud_watch_log_group_name     = aws_cloudwatch_log_group.ecs.name
@@ -25,11 +25,11 @@ resource "aws_ecs_cluster" "app" {
   }
 
   tags = {
-      Name                = "app"
-      TerraformWorkspace  = terraform.workspace
-      TerraformModule     = basename(abspath(path.module))
-      TerraformRootModule = basename(abspath(path.root))
-    }
+    Name                = "app"
+    TerraformWorkspace  = terraform.workspace
+    TerraformModule     = basename(abspath(path.module))
+    TerraformRootModule = basename(abspath(path.root))
+  }
 }
 
 resource "aws_ecs_service" "app" {
@@ -41,9 +41,9 @@ resource "aws_ecs_service" "app" {
 
 
   load_balancer {
-    target_group_arn    = aws_lb_target_group.app.arn
-    container_name      = var.service_name
-    container_port      = var.service_port
+    target_group_arn = aws_lb_target_group.app.arn
+    container_name   = var.service_name
+    container_port   = var.service_port
   }
 
   network_configuration {
@@ -59,10 +59,10 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions    = local.app_container_definition
   requires_compatibilities = [var.ecs_launch_type]
 
-  cpu                      = var.fargate_cpu
-  memory                   = var.fargate_memory
-  network_mode             = "awsvpc"
+  cpu          = var.fargate_cpu
+  memory       = var.fargate_memory
+  network_mode = "awsvpc"
 
-  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_execution_role.arn
+  execution_role_arn = aws_iam_role.ecs_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_execution_role.arn
 }

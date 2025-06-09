@@ -4,7 +4,8 @@ Application deployed on AWS ECS Infrastructure
 
 ## Directory Structure
 
-MEWS-SNOOZE/
+```
+mews-snooze/
 ├── .github/
 │   └── workflows/
 ├── application/
@@ -17,7 +18,7 @@ MEWS-SNOOZE/
 │   ├── prod/
 │   └── staging/
 ├── img/
-
+```
 
 ## STACK
 
@@ -85,7 +86,7 @@ The workflow:
    * Logs into Amazon ECR
    * Builds, tags, and pushes the Docker image to ECR using the Git tag
 
-## 🔐 Required Secrets
+##### 🔐 Required Secrets
 
 Set the following secrets in your GitHub repository:
 
@@ -93,7 +94,7 @@ Set the following secrets in your GitHub repository:
 * `AWS_SECRET_KEY` – Corresponding AWS secret key
 * `REPO_NAME` – Name of your ECR repository
 
-## 🧱 Example Output
+##### 🧱 Example Output
 
 After a successful run, your Docker image will be available in ECR under:
 
@@ -101,12 +102,12 @@ After a successful run, your Docker image will be available in ECR under:
 <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/<REPO_NAME>:<git-tag>
 ```
 
-## 📌 Notes
+##### 📌 Notes
 
 * Make sure your Git repo is tagged properly (`git tag <version>`), as the tag is used for the image version.
 * The AWS region is hardcoded to `us-east-1`. Modify the `aws-region` value if you're using another region.
 * Your Dockerfile must be located in `application/`.
-* The current terraform code is hardcoded to use Image from docker, since the Image was pushed to docker. To use the ECR image, you would need to
+* The current terraform code is hardcoded to use pre-built application Image from docker, since the Image was pushed to docker. To use the ECR image, you would need to
   add permissions for the IaC for the ECS service to pull from ECR Registry. See where to change in code:
 
   ```hcl
@@ -127,7 +128,7 @@ After a successful run, your Docker image will be available in ECR under:
 
 To deploy this solution to the cloud, two main technologies are required -- Cloud platform(AWS), Terraform
 
-- Terraform -- Terraform would be used to instantiate and manage the infrastructure the application would run on, this means, we get the ability to manage the state and the lifecycle of the infrastructure using terraform workflow
+- Terraform -- Terraform is used to instantiate and manage the infrastructure the application would run on, this means, we get the ability to manage the state and the lifecycle of the infrastructure using terraform workflow
 
 - Cloud Platform -- Any cloud provider is fine for deployment, For AWS, I leverage the following service
 
@@ -163,3 +164,13 @@ cd deploy-infra
 ### Infrastructural Diagram and Reference (ECS Infrastructure)
 
 ![ECS infra](img/infra_diag.png)
+
+### Automated Infrastructure Deployment
+
+Deployment pipleines for Infrastructure have been provided using the `.github/workflows` to use this workflow, you would need to setup `Action Secrets` for:
+ - AWS Access_Keys
+ - AWS Secrets
+ - Docker Login credentials
+
+#### 📌 Notes
+Please see the workflow files for needed credentials.

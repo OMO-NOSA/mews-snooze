@@ -106,6 +106,18 @@ After a successful run, your Docker image will be available in ECR under:
 * Make sure your Git repo is tagged properly (`git tag <version>`), as the tag is used for the image version.
 * The AWS region is hardcoded to `us-east-1`. Modify the `aws-region` value if you're using another region.
 * Your Dockerfile must be located in `application/`.
+* The current terraform code is hardcoded to use Image from docker, since the Image was pushed to docker. To use the ECR image, you would need to
+  add permissions for the IaC for the ECS service to pull from ECR Registry. See where to change in code:
+
+  ```hcl
+    // The docker image url
+    // This can also be the ECR image URL, when using ECR ensure the ECS have permissions to pull from ECR registry.
+    variable "service_image_url" {
+    type        = string
+    description = "Url to the container image(Dockerhub/ECR)"
+    default     = "docker.io/omojaphet/app-test:latest"
+    }
+  ```
 
 ---
 ![Docker infra](img/workflow.png)

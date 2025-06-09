@@ -1,4 +1,18 @@
-## Usage
+## Example Usage (Local Deployment)
+
+- Change directory to example directory
+
+```shell
+cd deploy-infra/prod
+```
+
+- Set environment Variables for AWS
+
+```shell
+
+export TF_VAR_access_key=***
+export TF_VAR_secret_key=***
+```
 
 Install Terraform Dependencies
 
@@ -26,16 +40,6 @@ terraform destroy
 
 - service_url -- For accessing web application
 
-## Accessing API
-
-
-To access the API, you can use PostMan or any other HTTP Client of your choice
-
-* To get  ```GET``` to http://service_url/factorial?value=5
-
-```
-{"function":"factorial","input":"5","output":120}
-
-```
+## Accessing APP
 
 * For health checks ```GET``` to http://service_url/

@@ -1,3 +1,3 @@
 output "service_url" {
-  value = module.api.service_url
+  value = module.app.service_url
 }

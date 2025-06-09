@@ -1,4 +1,13 @@
-resource "aws_ecs_cluster" "api" {
+locals {
+  app_container_definition = templatefile("${path.module}/container-definitions/app.json.tpl", {
+    service_name      = var.service_name
+    service_image_url = var.service_image_url
+    service_port      = var.service_port
+    aws_region        = var.aws_region
+  })
+}
+
+resource "aws_ecs_cluster" "app" {
   name = "${var.cluster_name}_${random_string.uid.result}"
 
   setting {
@@ -16,23 +25,23 @@ resource "aws_ecs_cluster" "api" {
   }
 
   tags = {
-      Name                = "Factorial Api"
+      Name                = "app"
       TerraformWorkspace  = terraform.workspace
       TerraformModule     = basename(abspath(path.module))
       TerraformRootModule = basename(abspath(path.root))
     }
 }
 
-resource "aws_ecs_service" "api" {
+resource "aws_ecs_service" "app" {
   name            = "${var.service_name}_ecs_service_${random_string.uid.result}"
-  cluster         = aws_ecs_cluster.api.id
-  task_definition = aws_ecs_task_definition.api.arn
+  cluster         = aws_ecs_cluster.app.id
+  task_definition = aws_ecs_task_definition.app.arn
   desired_count   = var.ecs_service_desired_count
   launch_type     = var.ecs_launch_type
 
 
   load_balancer {
-    target_group_arn    = aws_lb_target_group.api.arn
+    target_group_arn    = aws_lb_target_group.app.arn
     container_name      = var.service_name
     container_port      = var.service_port
   }
@@ -45,9 +54,9 @@ resource "aws_ecs_service" "api" {
 
 }
 
-resource "aws_ecs_task_definition" "api" {
+resource "aws_ecs_task_definition" "app" {
   family                   = var.service_name
-  container_definitions    = data.template_file.api.rendered
+  container_definitions    = local.app_container_definition
   requires_compatibilities = [var.ecs_launch_type]
 
   cpu                      = var.fargate_cpu
@@ -56,16 +65,4 @@ resource "aws_ecs_task_definition" "api" {
 
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_execution_role.arn
-}
-
-
-data "template_file" "api" {
-  template = "${file("${path.module}/container-definitions/api.json.tpl")}"  
-    vars = {
-      service_name      = var.service_name
-      service_image_url = var.service_image_url
-      service_port      = var.service_port
-      aws_region        = var.aws_region
-      
-  }
 }

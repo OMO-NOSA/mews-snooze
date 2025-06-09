@@ -1,4 +1,4 @@
-Terraform module that spawns the Factorial API on an autoscalabling group of ECS Cluster
+Terraform module APP on an autoscalabling group of ECS Cluster
 
 Features:
 * High-availability (Multi-AZ)

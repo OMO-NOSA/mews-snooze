@@ -1,5 +1,3 @@
-name: Build and Publish
-
 on:
   # run it on push to the default repository branch
   push:
@@ -8,39 +6,44 @@ on:
   pull_request:
     branches: [main]
 
+name: Deploy to ECR
+
 jobs:
-  # define job to build and publish docker image
-  build:
-    name: Build Docker image and push to repositories
-    # run only when code is compiling and tests are passing
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: application-deploy/
 
-    # steps to perform in job
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      # setup Docker buld action
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: us-east-1
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Build image and push to Docker Hub and GitHub Container Registry
-        uses: docker/build-push-action@v2
-        with:
-          # relative path to the place where source code with Dockerfile is located
-          context: ./Application
-          # Note: tags has to be all lower-case
-          tags: |
-            omojaphet/container-app:latest 
-          # build on feature branches, push only on main branch
-          push: ${{ github.ref == 'refs/heads/main' }}
+    - name: Get Git Tag
+      id: get_tag
+      run: echo "::set-output name=tag::$(git describe --tags)"
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push the image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
+        IMAGE_TAG: ${{ steps.get_tag.outputs.tag }}
+      run: |
+        # Build a docker container and push it to ECR 
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        echo "Pushing image to ECR..."
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

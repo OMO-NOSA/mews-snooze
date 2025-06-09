@@ -6,7 +6,7 @@ data "aws_subnet_ids" "default" {
   vpc_id = data.aws_vpc.default.id
 }
 
-resource "aws_lb" "api_cluster" {
+resource "aws_lb" "app_cluster" {
   name               = "${var.lb_name}-${random_string.uid.result}"
   internal           = false
   load_balancer_type = "application"
@@ -22,7 +22,7 @@ resource "aws_lb" "api_cluster" {
 
 
 
-resource "aws_lb_target_group" "api" {
+resource "aws_lb_target_group" "app" {
   name                 = "${var.lb_name}-${random_string.uid.result}"
   port                 = var.service_port
   protocol             = "HTTP"
@@ -31,7 +31,7 @@ resource "aws_lb_target_group" "api" {
 
   tags = {
 
-    Name                = "Factorial API"
+    Name                = "app"
     TerraformWorkspace  = terraform.workspace
     TerraformModule     = basename(abspath(path.module))
     TerraformRootModule = basename(abspath(path.root))
@@ -46,18 +46,18 @@ resource "aws_lb_target_group" "api" {
   }
 
   depends_on = [
-    aws_lb.api_cluster
+    aws_lb.app_cluster
   ]
 
 }
 
 resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.api_cluster.arn
+  load_balancer_arn = aws_lb.app_cluster.arn
   port              = var.service_port
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_lb_target_group.api.arn
+    target_group_arn = aws_lb_target_group.app.arn
     type             = "forward"
   }
 }

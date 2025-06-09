@@ -5,7 +5,7 @@ resource "aws_cloudwatch_log_group" "ecs" {
 
   tags = {
 
-    Name                = "API"
+    Name                = "app"
     TerraformWorkspace  = terraform.workspace
     TerraformModule     = basename(abspath(path.module))
     TerraformRootModule = basename(abspath(path.root))

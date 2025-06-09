@@ -3,6 +3,19 @@ variable "aws_region" {
   description = "AWS region"
   default     = "us-east-2"
 }
+
+variable "http_cidr_block" {
+  type = list(string)
+  description = "Cidr block for the http traffics"
+  default = ["0.0.0.0/0"]
+}
+
+variable "service_cidr_block" {
+  type = list(string)
+  description = "Cidr block for the http traffics"
+  default = ["0.0.0.0/0"]
+}
+
 variable "application_count" {
   type        = number
   description = "Number of application instance"
@@ -22,12 +35,12 @@ variable "subnet_ids" {
 variable "project_name" {
     type        = string
     description = "Project name to be rendered in tags"
-    default     = "factorial_api"
+    default     = "app"
 }
 variable "environment" {
     type        = string
     description = "Environment to be rendered in tags"
-    default     = "Development"
+    default     = "dev"
 }
 
 variable "health_check_path" {
@@ -44,7 +57,7 @@ variable "health_check_protocol" {
 variable "lb_name" {
     type        = string
     description = "Name of Application load balancer"
-    default     = "api"
+    default     = "app"
 }
 variable "ecs_desired_capacity" {
   type        = number
@@ -73,19 +86,19 @@ variable "asg_adjustment_type" {
 variable "cluster_name" {
     type        = string
     description = "Name of cluster"
-    default     = "api-cluster"
+    default     = "app-cluster"
 }
 
-variable "api_agent_task_name" {
+variable "app_agent_task_name" {
   type        = string
-  description = "api agent task name"
-  default     = "api agent"
+  description = "app agent task name"
+  default     = "app agent"
 }
 
-variable "api_task_name" {
+variable "app_task_name" {
   type        = string
-  description = "api task name"
-  default     = "api task"
+  description = "app task name"
+  default     = "app task"
 }
 
 variable "log_retention_in_days" {
@@ -103,7 +116,7 @@ variable "ecs_service_desired_count" {
 variable "service_name" {
   type        = string
   description = "Name of running container"
-  default     = "api-factorial"
+  default     = "app"
 }
 variable "service_port" {
   type        = number
@@ -131,8 +144,10 @@ variable "ecs_launch_type" {
   description = "Determines the Infrastructure on which tasks and services are hosted"
   default     = "FARGATE"
 }
+// The docker image url
+// This can also be the ECR image URL, when using ECR ensure the ECS have permissions to pull from ECR registry.
 variable "service_image_url" {
   type        = string
   description = "Url to the container image(Dockerhub/ECR)"
-  default     = "docker.io/omojaphet/container-app:latest"
+  default     = "docker.io/omojaphet/app-test:latest"
 }

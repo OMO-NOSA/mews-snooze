@@ -168,9 +168,9 @@ cd deploy-infra/{dev | staging | prod}
 ### Automated Infrastructure Deployment
 
 Deployment pipleines for Infrastructure have been provided using the `.github/workflows` to use this workflow, you would need to setup `Action Secrets` for:
- - AWS Access_Keys
- - AWS Secrets
- - Docker Login credentials
+ - `AWS Access_Keys`
+ - `AWS Secrets`
+ - `Docker Login credentials`
 
 #### 📌 Notes
 
